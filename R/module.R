@@ -40,7 +40,7 @@ myEnvModules$avail_list <- function(action_type){
   try(module_vars <- system(paste('modulecmd bash',action_type),intern = TRUE))
 }
 
-# Eventually we could support clearing all modules, however for now just print
+# Unload all currently loaded modules
 myEnvModules$clear <- function(action_type){
   loaded_modules <-  strsplit(Sys.getenv("LOADEDMODULES"),":")
   if (length(loaded_modules[[1]]) > 0) {
@@ -58,48 +58,50 @@ myEnvModules$load_unload <- function(action_type, module_name=""){
   try(module_vars <- system(paste('modulecmd bash',action_type, module_name),intern = TRUE))
   
   if (length(module_vars) > 0){
-    # Separate environment variables
-    module_var <- strsplit(module_vars,";")
+    for (y in seq(1,length(module_vars))) {
+      # Separate environment variables
+      module_var <- strsplit(module_vars,";")
     
-    # Iterate through all environment variables
-    for (x in seq(1,length(module_var[[1]]))) {
-      # Isolate key, value pair
-      evar <- module_var[[1]][x]
-      
-      # Filter export commands
-      if (length(grep('^ *export',evar)) == 0 && length(evar) > 0) {
-        # Seprate key and value
-        evar <- strsplit(as.character(evar),'=')
-        # Stip spaces at the end of the value
-        evar_val <- gsub('[[:space:]]','',evar[[1]][2])
-        # Remove extra backslashes
-        l <- list(gsub('\\$','',evar_val))
+      # Iterate through all environment variables
+      for (x in seq(1,length(module_var[[y]]))) {
+        # Isolate key, value pair
+        evar <- module_var[[y]][x]
         
-        # Load dependant modules
-        if (length(grep('^ *module',evar[[1]][1])) > 0){
-          inner_module <- strsplit(evar[[1]][1]," ")
-          myEnvModules$load_unload(inner_module[1][[1]][2],inner_module[1][[1]][3])
-        }
-        # Source environment
-        else if (length(grep('^ *source',evar[[1]][1])) > 0){
-          writeLines(paste0("This module uses a bash script to initialize.\nYou may need to prepend the following:\n\t",evar[[1]][1]))
-        }
-        # Unset variables that need to be unset
-        else if(length(grep("^ *unset ",evar[[1]][1])) > 0){
-          evar <- gsub("^unset (.*)$","\\1",evar[[1]][1])
-          Sys.unsetenv(evar)
-        } 
-        else {
-          # Assign names to each value in list
-          names(l) <- evar[[1]][1]
-          # Set environment variable in current environment
-          do.call(Sys.setenv, l)
+        # Filter export commands
+        if (length(grep('^ *export',evar)) == 0 && length(evar) > 0) {
+          # Seprate key and value
+          evar <- strsplit(as.character(evar),'=')
+          # Stip spaces at the end of the value
+          evar_val <- gsub('[[:space:]]','',evar[[1]][2])
+          # Remove extra backslashes
+          l <- list(gsub('\\$','',evar_val))
+          
+          # Load dependant modules
+          if (length(grep('^ *module',evar[[1]][1])) > 0){
+            inner_module <- strsplit(evar[[1]][1]," ")
+            #myEnvModules$load_unload(inner_module[1][[1]][2],inner_module[1][[1]][3])
+          }
+          # Source environment
+          else if (length(grep('^ *source',evar[[1]][1])) > 0){
+            warning(paste0("Module uses a bash script to initialize, some software may not function as expected:\n\t",evar[[1]][1]))
+          }
+          # Unset variables that need to be unset
+          else if(length(grep("^ *unset ",evar[[1]][1])) > 0){
+            evar <- gsub("^unset (.*)$","\\1",evar[[1]][1])
+            Sys.unsetenv(evar)
+          } 
+          else {
+            # Assign names to each value in list
+            names(l) <- evar[[1]][1]
+            # Set environment variable in current environment
+            do.call(Sys.setenv, l)
+          }
         }
       }
     }
   }
 }
-# Define what happens bases on action
+Define what happens bases on action
 module <- function(action_type,module_name=""){
   # Check to see if modulecmd is in current PATH
   try(
