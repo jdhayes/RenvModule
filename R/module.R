@@ -101,7 +101,8 @@ myEnvModules$load_unload <- function(action_type, module_name=""){
     }
   }
 }
-Define what happens bases on action
+
+#Define what happens bases on action
 module <- function(action_type,module_name=""){
   # Check to see if modulecmd is in current PATH
   try(
