@@ -67,8 +67,7 @@ myEnvModules$load_unload <- function(action_type, module_name=""){
       evar <- module_var[[1]][x]
       
       # Filter export commands
-      if (length(grep('^export',evar)) == 0 && length(evar) > 0) {
-        
+      if (length(grep('^ *export',evar)) == 0 && length(evar) > 0) {
         # Seprate key and value
         evar <- strsplit(as.character(evar),'=')
         # Stip spaces at the end of the value
@@ -76,8 +75,17 @@ myEnvModules$load_unload <- function(action_type, module_name=""){
         # Remove extra backslashes
         l <- list(gsub('\\$','',evar_val))
         
+        # Load dependant modules
+        if (length(grep('^ *module',evar[[1]][1])) > 0){
+          inner_module <- strsplit(evar[[1]][1]," ")
+          myEnvModules$load_unload(inner_module[1][[1]][2],inner_module[1][[1]][3])
+        }
+        # Source environment
+        else if (length(grep('^ *source',evar[[1]][1])) > 0){
+          writeLines(paste0("This module uses a bash script to initialize.\nYou may need to prepend the following:\n\t",evar[[1]][1]))
+        }
         # Unset variables that need to be unset
-        if(length(grep("^unset ",evar[[1]][1])) > 0){
+        else if(length(grep("^ *unset ",evar[[1]][1])) > 0){
           evar <- gsub("^unset (.*)$","\\1",evar[[1]][1])
           Sys.unsetenv(evar)
         } 
