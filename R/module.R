@@ -54,6 +54,8 @@ myEnvModules$clear <- function(action_type){
 
 # Load and unload actions are basically the same, set environment variables given by modulecmd
 myEnvModules$load_unload <- function(action_type, module_name=""){
+  module_name <- paste(module_name, collapse=' ')
+  
   # Use the low level C binary for generating module environment variables
   try(module_vars <- system(paste('modulecmd bash',action_type, module_name),intern = TRUE))
   
