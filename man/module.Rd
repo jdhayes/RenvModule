@@ -1,4 +1,5 @@
 \name{module}
+\encoding{UTF-8}
 \alias{module}
 \title{
 Interface to allow full use of the Environment Modules system for Unix
