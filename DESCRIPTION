@@ -4,6 +4,6 @@ Title: Interface to Allow Full Use of the Environment Modules System for Unix
 Version: 1.0
 Date: 2020-06-30
 Author: Jordan Hayes
-Maintainer: UCR HPCC <support@hpcc.ucr.edu>
+Maintainer: Jordan Hayes <support@hpcc.ucr.edu>
 Description: Provides environment modules functionality, which enables use of the Environment Modules system (<http://modules.sourceforge.net/>) from within the R environment. By default the user's login shell environment (ie. "bash -l") will be used to initialize the current session. The module function can also; load or unload specific software, list all the loaded software within the current session, and list all the applications available for loading from the module system. Lastly, the module function can remove all loaded software from the current session.
 License: GPL-2
