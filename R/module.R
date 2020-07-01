@@ -35,9 +35,11 @@ myEnvModules$init <- function(){
   }
 }
 
-# Print available modules or currently loaded modules on stderr
+# Return available modules or currently loaded modules
 myEnvModules$avail_list <- function(action_type){
-  try(module_vars <- system(paste('modulecmd bash',action_type),intern = TRUE))
+  try(module_vars <- system2('modulecmd',paste('bash',action_type,'-t'),stdout=TRUE,stderr=TRUE))
+  # Return only the module names
+  return(module_vars[-grep(":$",module_vars)])
 }
 
 # Unload all currently loaded modules
@@ -122,8 +124,8 @@ module <- function(action_type,module_name=""){
   switch(action_type,
     "load"   = myEnvModules$load_unload(action_type,module_name),
     "unload" = myEnvModules$load_unload(action_type,module_name),
-    "list"   = myEnvModules$avail_list(action_type),
-    "avail"  = myEnvModules$avail_list(action_type),
+    "list"   = return(myEnvModules$avail_list(action_type)),
+    "avail"  = return(myEnvModules$avail_list(action_type)),
     "clear"  = myEnvModules$clear(action_type),
     "init"   = myEnvModules$init(),
     stop("That action is not supported.")
