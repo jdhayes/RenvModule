@@ -77,8 +77,10 @@ RenvModule <- setRefClass("RenvModule",
             if (length(grep('^ *export',evar)) == 0 && length(evar) > 0) {
               # Seprate key and value
               evar <- strsplit(as.character(evar),'=')
-              # Stip spaces at the end of the value
-              evar_val <- gsub('[[:space:]]','',evar[[1]][2])
+              
+              # Stip spaces at the end of the value, and remove backslashes
+              evar_val <- gsub("\\\\", "", gsub('[[:space:]]','',evar[[1]][2]))
+              
               # Remove extra backslashes
               l <- list(gsub('\\$','',evar_val))
               
