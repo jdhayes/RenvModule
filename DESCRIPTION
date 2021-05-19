@@ -1,7 +1,7 @@
 Package: RenvModule
 Type: Package
 Title: Interface to Allow Full Use of the Environment Modules System for Unix
-Version: 1.0
+Version: 1.1
 Date: 2020-06-30
 Author: Jordan Hayes
 Maintainer: Jordan Hayes <support@hpcc.ucr.edu>
