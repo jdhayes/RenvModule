@@ -2,7 +2,10 @@
 ## Access module system from R ##
 #################################
 
-# Define S4 class
+#' A Reference Class to contain method.
+#' @import methods
+#' @export RenvModule
+#' @exportClass RenvModule
 RenvModule <- setRefClass("RenvModule",
   fields=list(modulecmd_path="character"),
   methods=list(
@@ -111,10 +114,26 @@ RenvModule <- setRefClass("RenvModule",
   )
 )
 
-#Define what happens based on action
+#' Global instance of RenvModule
+# @name myEnvModules
+myEnvModules <- RenvModule()
+
+#' Define what happens based on action
+#'
+#' @param action_type Name of the action to be executed as character vector. The following switches are accepted: \dQuote{avail}, \dQuote{list}, \dQuote{init}, \dQuote{load}, \dQuote{unload}, and \dQuote{clear}.
+#' @param module_name Name of software to load as character vector.
+#' @examples
+#'\dontrun{
+#' module("load","tophat")
+#' module("load","tophat/2.1.1")
+#' module("list")
+#' module("avail")
+#' module("init")
+#' module("unload", "tophat")
+#' module("unload", "tophat/2.1.1")
+#' module("clear")
+#'}
 module <- function(action_type,module_name=""){
-  # Create instance of RenvModule
-  myEnvModules <- RenvModule()
 
   # Find path for module command
   myEnvModules$modulecmd_path <- Sys.getenv('LMOD_CMD')
@@ -141,28 +160,5 @@ module <- function(action_type,module_name=""){
     "init"   = myEnvModules$init(),
     stop("That action is not supported.")
   )
-}
-## Usage: 
-# module("load","tophat")
-# module("load","tophat/2.1.1")
-# module("list")
-# module("avail")
-# module("init")
-# module("unload", "tophat")
-# module("unload", "tophat/2.1.1")
-
-#####################
-## Legacy Wrappers ##
-#####################
-## List software available in module system
-modulelist <- function() {
-  print(module("avail"))
-  warning("The function modulelist will be deprecated in future releases, please refer to the documentation for proper useage.")
-}
-
-## Load software from module system
-moduleload <- function(module,envir="PATH") {
-  module("load",module)
-  warning("The function moduleload will be deprecated in future releases, please refer to the documentation for proper useage.")
 }
 
