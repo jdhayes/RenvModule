@@ -122,6 +122,7 @@ myEnvModules <- RenvModule()
 #'
 #' @param action_type Name of the action to be executed as character vector. The following switches are accepted: \dQuote{avail}, \dQuote{list}, \dQuote{init}, \dQuote{load}, \dQuote{unload}, and \dQuote{clear}.
 #' @param module_name Name of software to load as character vector.
+#' @export module
 #' @examples
 #'\dontrun{
 #' module("load","tophat")
