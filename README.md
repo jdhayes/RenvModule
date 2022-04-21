@@ -1,5 +1,5 @@
 > DEPRECATED:
-> The Environment Moodule Systsme already has a wrapper and it works great
+> The Environment Module System already has a wrapper and it works great:
 > 
 > https://github.com/cea-hpc/modules/blob/master/init/r.R.in
 >
